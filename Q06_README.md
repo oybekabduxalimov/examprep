@@ -1,38 +1,50 @@
-# Q06 — Addressing Modes, MOV/LEA, Jumps, Loops, Switch-Case in Assembly
+# Q06 - Memory Addressing Modes, MOV, LEA, JMP and Conditional Jumps, FOR and WHILE Loops, SWITCH-CASE in Assembly
 
-## Lecture goal
-Understand memory addressing and control-flow construction in assembly.
+## 1) Addressing modes
+- Immediate mode uses a constant encoded in the instruction.
+- Register mode uses a value already in a register.
+- Direct or displacement mode uses a memory address plus an offset.
+- Indexed addressing combines base, index, scale, and displacement.
+- Effective address calculation is central to arrays, pointers, and structures.
 
----
+## 2) Effective address form
+- x86 commonly computes addresses as `base + index * scale + displacement`.
+- The scale factor is typically `1`, `2`, `4`, or `8`.
+- Base registers often point to arrays, stack frames, or structures.
+- Index registers usually select elements or fields.
+- Displacement provides constant offsets such as field positions or local variable slots.
 
-## 1) Addressing Modes
-- Immediate, register, direct/indirect memory operands.
-- Effective address computation with base/index/scale/displacement.
+## 3) `MOV` and data transfer
+- `MOV` copies data from source to destination.
+- It does not perform arithmetic or pointer dereference by itself.
+- Source and destination sizes must match.
+- Direct memory-to-memory `MOV` is restricted in common x86 forms.
+- Register choices determine whether the move is byte, word, doubleword, or quadword sized.
 
-## 2) MOV vs LEA
-- `MOV` transfers data.
-- `LEA` computes addresses/arithmetic expressions without dereference.
+## 4) `LEA` as address and arithmetic tool
+- `LEA` computes an effective address without reading memory.
+- It is used for pointer calculation.
+- It is also used for fast arithmetic such as `x + 4*y`.
+- `LEA` changes the destination register only.
+- `LEA` does not update flags.
 
-## 3) Branching Basics
-- `JMP` for unconditional jumps.
-- Conditional jumps rely on prior compare/test results.
+## 5) Jumps and conditional control flow
+- `JMP` performs an unconditional transfer of control.
+- Conditional jumps inspect flags set by `CMP`, `TEST`, or arithmetic instructions.
+- Signed and unsigned comparisons use different jump mnemonics.
+- A branch changes the next instruction by rewriting the instruction pointer.
+- Labels provide the target locations for branches.
 
-## 4) Building Loops
-- FOR/WHILE compile into labels + compare + conditional branch.
-- Loop correctness depends on update and exit condition ordering.
+## 6) Translating loops
+- `while` loops usually test before entering the body.
+- `do-while` loops test after executing the body once.
+- `for` loops compile into initialization, test, body, and update steps.
+- Loop counters often live in registers.
+- The loop condition becomes a compare plus conditional jump.
 
-## 5) Switch-Case Translation
-- Dense cases often use jump tables.
-- Sparse cases may compile as compare-branch chains.
-
-## What to emphasize when speaking
-1. Effective address math is foundational for array/pointer code.
-2. Control flow is explicit in assembly.
-3. `LEA` is a powerful non-memory arithmetic helper.
-
-## Short speaking script (about 1 minute)
-This lecture connects data access and control flow.  
-Addressing modes determine where operands come from, while compares and jumps encode logic decisions.  
-High-level loops and switch statements are built from labels and branch instructions.  
-Understanding this mapping is crucial for reading compiler-generated assembly.
-
+## 7) Translating `switch`
+- Small `switch` statements can compile into chains of compares and jumps.
+- Dense `switch` ranges often use jump tables.
+- A jump table stores target addresses indexed by the case value.
+- Bounds checking is needed before indexing the table.
+- `default` handles unmatched values.

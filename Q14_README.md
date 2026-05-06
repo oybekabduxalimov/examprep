@@ -1,39 +1,50 @@
-# Q14 — Memory Hierarchy: HDD and SSD
+# Q14 - Memory Hierarchy: HDD and SSD
 
-## Lecture goal
-Compare HDD and SSD technologies and their performance/engineering tradeoffs.
+## 1) Hard disk physical structure
+- A hard disk contains spinning platters mounted on a spindle.
+- Each platter surface is divided into concentric tracks.
+- Tracks are divided into sectors separated by gaps.
+- Aligned tracks across platters form a cylinder.
+- Read and write heads move together from cylinder to cylinder.
 
----
+## 2) Disk geometry and capacity
+- Capacity depends on bytes per sector, sectors per track, tracks per surface, surfaces, and platters.
+- Modern disks use recording zones rather than a single uniform sectors-per-track value.
+- Outer tracks can store more sectors than inner tracks.
+- The controller hides most geometry details from software.
+- Vendor capacity numbers are based on decimal storage units.
 
-## 1) HDD Basics
-- Mechanical storage: platters + moving head.
-- Access includes seek time + rotational latency.
+## 3) HDD access time components
+- Seek time moves the head to the target track.
+- Rotational latency waits for the desired sector to rotate under the head.
+- Transfer time reads or writes the sector contents.
+- Total access time is roughly the sum of these three components.
+- For random access, seek and rotational latency dominate far more than transfer time.
 
-## 2) SSD Basics
-- Flash-based, no moving parts.
-- Faster random access and lower latency.
+## 4) Logical block abstraction and I/O path
+- Software usually addresses a disk as a sequence of logical blocks.
+- The disk controller maps logical blocks to physical sectors.
+- The CPU issues a command with block number and destination memory location.
+- The controller can move data into memory using DMA.
+- Completion is typically reported back to the CPU with an interrupt.
 
-## 3) Access Pattern Effects
-- Sequential vs random I/O behavior differs strongly.
-- SSD generally dominates random workloads.
+## 5) SSD organization
+- An SSD uses flash memory instead of moving platters.
+- Data is read and written in page-sized units.
+- Erase happens at block granularity, which is larger than a page.
+- Pages belong to erase blocks inside the flash array.
+- A flash translation layer maps logical blocks to physical flash locations.
 
-## 4) Flash Management
-- Erase-before-write constraints.
-- Wear leveling and garbage collection.
-- Endurance considerations.
+## 6) SSD write constraints
+- A page cannot be overwritten in place until its block is erased.
+- Random writes can trigger copying of still-valid pages into a new block.
+- Garbage collection and wear leveling are part of SSD management.
+- Repeated writes wear flash cells out over time.
+- Random writes are often much slower than random reads because of erase and relocation work.
 
-## 5) System-Level Choice
-- HDD: cheaper per GB for bulk storage.
-- SSD: better responsiveness/performance-sensitive paths.
-
-## What to emphasize when speaking
-1. Mechanical vs solid-state design explains speed gap.
-2. Performance depends on workload pattern.
-3. SSD controller logic is key to durability/performance.
-
-## Short speaking script (about 1 minute)
-This lecture compares HDD and SSD in terms of internal mechanics and practical performance.  
-HDD latency is dominated by physical movement, while SSD avoids that with flash memory.  
-SSD gives strong random I/O performance but has erase/write and endurance constraints handled by controller algorithms.  
-System design decisions depend on cost, capacity, and workload profile.
-
+## 7) HDD versus SSD tradeoffs
+- HDDs rely on mechanical motion, so random access is slow.
+- SSDs have no moving parts, so access latency is much lower.
+- SSDs are faster, quieter, and more shock-resistant.
+- HDDs have traditionally offered cheaper large capacity.
+- SSD performance depends heavily on write patterns, controller policy, and flash management.

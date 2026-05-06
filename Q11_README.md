@@ -38,4 +38,3 @@ This lecture maps a running process into code, data, heap, and stack regions.
 Each region has a specific runtime purpose and access pattern.  
 CPU memory operations are not abstract; they become hardware transactions affected by alignment and locality.  
 That is why layout knowledge is valuable for both debugging and optimization.
-

@@ -1,37 +1,50 @@
-# Q13 — Memory Hierarchy: DRAM
+# Q13 - Memory Hierarchy: DRAM
 
-## Lecture goal
-Understand DRAM structure, timing behavior, and why refresh/latency matter.
+## 1) DRAM storage cell
+- DRAM stores each bit as charge in a capacitor.
+- One transistor controls access to the cell.
+- Charge leaks over time, so the value is not permanent without refresh.
+- DRAM is dense and inexpensive compared with SRAM.
+- Density is one reason DRAM is used for main memory.
 
----
+## 2) Refresh and volatility
+- DRAM contents must be refreshed periodically.
+- Refresh happens on a hardware schedule, typically every tens of milliseconds.
+- Refresh preserves correctness, not performance.
+- Refresh overhead is built into how DRAM operates.
+- Losing refresh means losing stored data.
 
-## 1) DRAM Cell and Volatility
-- Cell stores charge in capacitor.
-- Charge leaks over time, so refresh is required.
+## 3) Internal organization
+- DRAM arrays are organized by rows and columns.
+- Access begins by selecting a row.
+- The selected row is copied into an internal row buffer.
+- A column selection then chooses the desired supercell from that buffered row.
+- Accesses to the same open row are faster than accesses that require a different row.
 
-## 2) Organization
-- Cells arranged into rows/columns and banks.
-- Access path uses activate, read/write, precharge sequence.
+## 4) RAS, CAS, and row-buffer behavior
+- `RAS` selects the row.
+- `CAS` selects the column after the row is available.
+- The row buffer acts like a small staging area inside the chip.
+- Row hits benefit from locality within the same row.
+- Row conflicts force additional DRAM activity and add latency.
 
-## 3) Row Buffer Behavior
-- Row activation loads row into buffer.
-- Same-row accesses are faster (row-buffer hits).
+## 5) Memory modules and controllers
+- Multiple DRAM chips are combined to build wider memory modules.
+- A controller coordinates addresses, timing, and data transfer.
+- A 64-bit memory word is often assembled from several chips in parallel.
+- Main memory performance depends on both chips and controller policy.
+- DRAM access is therefore a system-level behavior, not just a cell-level behavior.
 
-## 4) Timing Constraints
-- DRAM has strict timing parameters.
-- Latency comes from protocol phases, not just distance.
+## 6) SRAM versus DRAM
+- SRAM uses multi-transistor storage cells and does not need refresh while powered.
+- SRAM is faster and more expensive.
+- DRAM uses fewer transistors per bit and is cheaper.
+- SRAM is commonly used for caches.
+- DRAM is commonly used for large main-memory capacity.
 
-## 5) Controller Impact
-- Memory controller scheduling affects throughput and fairness.
-
-## What to emphasize when speaking
-1. DRAM is dense/cheap but timing-sensitive.
-2. Refresh is fundamental to correctness.
-3. Row/bank organization shapes performance.
-
-## Short speaking script (about 1 minute)
-This lecture covers DRAM internals and why main memory latency is significant.  
-DRAM uses capacitor-based storage, which requires periodic refresh and structured access commands.  
-Row-buffer locality and controller scheduling strongly influence real performance.  
-So DRAM behavior is architectural, not just “slow RAM.”
-
+## 7) Enhanced DRAM families
+- `SDRAM` synchronizes operations with a clock.
+- `DDR SDRAM` transfers data on both clock edges.
+- Later DDR generations increase prefetch and interface bandwidth.
+- The basic storage cell stayed similar while the interface evolved.
+- Performance improvements came largely from organization and signaling around the core DRAM array.

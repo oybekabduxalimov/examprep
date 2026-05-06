@@ -54,4 +54,3 @@ This lecture explains cache as a solution to CPU-DRAM speed mismatch.
 A memory address is decomposed into tag, set index, and offset to determine hit/miss quickly.  
 Design choices such as associativity, replacement, and write policy directly affect miss behavior and AMAT.  
 Multi-level cache hierarchy further improves effective access time.
-

@@ -1,39 +1,43 @@
-# Q07 — Stack Organization, Stack Operations, Procedures, Recursion, Stack Frame
+# Q07 - Stack Organization, Assembly Operations with Stack, Procedures, Recursive Functions, Stack Frame
 
-## Lecture goal
-Explain function call mechanics using stack frames and calling conventions.
+## 1) Stack fundamentals
+- The stack stores temporary execution context.
+- It normally grows toward lower addresses on x86-family systems.
+- The stack pointer marks the current top of stack.
+- Each active function call usually owns one stack frame.
+- Function nesting creates a stack of frames in call order.
 
----
+## 2) Core stack instructions
+- `PUSH` stores a value on the stack and adjusts the stack pointer.
+- `POP` retrieves the top value and adjusts the stack pointer back.
+- `CALL` pushes the return address and jumps to the callee.
+- `RET` pops the return address and transfers control back.
+- These instructions implement function calls at the machine level.
 
-## 1) Stack Fundamentals
-- LIFO structure used for call context.
-- Stack pointer tracks current top.
+## 3) Stack frame layout
+- A stack frame holds return address, saved registers, local variables, and sometimes arguments.
+- `EBP` or `RBP` is often used as a stable frame pointer.
+- `ESP` or `RSP` changes as values are pushed and popped.
+- Negative frame-pointer offsets commonly address locals.
+- Positive frame-pointer offsets commonly address arguments in classic layouts.
 
-## 2) Function Call Sequence
-- Caller sets up arguments.
-- `CALL` stores return address.
-- Callee allocates locals and saves required registers.
+## 4) Parameter passing and return values
+- Arguments may be passed in registers, on the stack, or both.
+- Small return values are typically placed in `EAX` or `RAX`.
+- Large results may use memory supplied by the caller.
+- Caller and callee must agree on the calling convention.
+- The calling convention also defines which registers must be preserved.
 
-## 3) Stack Frame Layout
-- Return address, saved frame pointer, locals, temporaries.
-- Frame pointer simplifies stable access to frame data.
+## 5) Saving execution context
+- Caller-saved registers may be overwritten by the callee.
+- Callee-saved registers must be restored before returning.
+- Prologue code sets up the new frame.
+- Epilogue code tears the frame down.
+- Incorrect save and restore logic corrupts control flow and data.
 
-## 4) Calling Convention Rules
-- Caller-saved vs callee-saved responsibilities.
-- Return values placed in defined registers.
-
-## 5) Recursion Behavior
-- Each recursive call creates a new frame.
-- Deep recursion risks stack overflow.
-
-## What to emphasize when speaking
-1. Function calls are ABI contracts.
-2. Stack/frame discipline prevents corruption.
-3. Recursion is just repeated frame creation.
-
-## Short speaking script (about 1 minute)
-This lecture shows how procedure calls are implemented on the stack.  
-Each call creates a frame containing return and local execution context, and conventions define register/argument responsibilities.  
-Recursion works naturally by stacking frames, but depth is limited by stack size.  
-Most low-level call bugs come from violating frame or save/restore rules.
-
+## 6) Recursive functions
+- Each recursive call gets its own independent frame.
+- Local variables from different recursion levels do not share storage.
+- The return chain unwinds in last-in, first-out order.
+- Recursion depth is limited by stack size.
+- A bad base case can cause stack overflow.

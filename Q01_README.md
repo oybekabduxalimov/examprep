@@ -1,43 +1,51 @@
-# Q01 — Binary Representation, Byte-Oriented Memory, Byte Ordering
+# Q01 - Binary Representation, Byte-Oriented Memory Organization, Byte Ordering
 
-## Lecture goal
-Understand how data is represented in bits/bytes and how byte ordering affects interpretation of multi-byte values.
+## 1) Binary and hexadecimal representation
+- Binary uses powers of 2.
+- Hexadecimal groups 4 bits into 1 digit.
+- `1 byte = 8 bits`, so 2 hex digits describe 1 byte.
+- Fixed width matters because leading zeros are part of the stored pattern.
+- The same value can be written in decimal, binary, or hex while the underlying bits stay the same.
 
----
+## 2) Bytes, words, and data sizes
+- A bit is the smallest stored state.
+- A byte is the basic addressable memory unit.
+- A word is the processor's natural integer and address size.
+- 32-bit systems commonly use 4-byte words.
+- 64-bit systems commonly use 8-byte words.
+- C type sizes depend on the platform, especially `long` and pointers.
 
-## 1) Number Systems Used in Computing
-- Decimal is human-friendly; binary/hex are machine-friendly.
-- Hex is compact for binary groups (4 bits per hex digit).
-- Fixed width (8/16/32/64-bit) determines representable range.
+## 3) Byte-oriented memory organization
+- Memory is viewed as a large array of bytes.
+- Each byte has its own address.
+- Multi-byte values occupy consecutive byte addresses.
+- A pointer stores a memory address, not the value at that address.
+- Processes get private virtual address spaces, so one process cannot directly overwrite another process's memory.
 
-## 2) Bits, Bytes, and Memory Addresses
-- A bit is the smallest unit; 8 bits = 1 byte.
-- Memory is byte-addressable: each address points to one byte.
-- Multi-byte values occupy consecutive addresses.
+## 4) Word-oriented view
+- A word starts at the address of its first byte.
+- Successive 32-bit words differ by 4 in address.
+- Successive 64-bit words differ by 8 in address.
+- Addresses still name bytes even when we talk about words.
+- Larger data objects are built from adjacent bytes.
 
-## 3) Signed vs Unsigned Interpretation
-- Same bit pattern can mean different numeric values by type.
-- Unsigned treats all bits as magnitude.
-- Signed usually uses two's complement interpretation.
+## 5) Bitwise operations
+- `AND` keeps bits that are 1 in both operands.
+- `OR` keeps bits that are 1 in either operand.
+- `XOR` keeps bits that differ.
+- `NOT` flips each bit.
+- Bit vectors can represent sets, permissions, masks, and flags.
 
-## 4) Byte Ordering (Endianness)
-- Little-endian: least significant byte at lowest address.
-- Big-endian: most significant byte at lowest address.
-- Single-byte values are unaffected by endianness.
+## 6) Byte ordering
+- Endianness decides how the bytes of a multi-byte value are laid out in memory.
+- Little-endian stores the least significant byte at the lowest address.
+- Big-endian stores the most significant byte at the lowest address.
+- Single-byte objects are unaffected by endianness.
+- A value such as `0x01234567` has the same numeric meaning on both systems but different byte layouts.
 
-## 5) Why Endianness Matters
-- Binary file parsing
-- Network communication (network byte order)
-- Cross-platform debugging and reverse engineering
-
-## What to emphasize when speaking
-1. Memory is byte-oriented, not integer-oriented.
-2. Type interpretation and byte order both matter.
-3. Endianness errors can silently produce wrong values.
-
-## Short speaking script (about 1 minute)
-This lecture explains how computers store values as bits and bytes in memory.  
-The key idea is that memory addresses bytes, and larger values are built from multiple bytes.  
-Because of that, byte order becomes important: little-endian and big-endian store the same value in different byte sequences.  
-So when reading raw memory, correct interpretation requires both data type and endianness.
-
+## 7) Why byte order matters
+- It affects raw memory inspection.
+- It affects binary file parsing.
+- It affects data exchange across different machine types.
+- Network protocols usually define one canonical byte order.
+- Bugs appear when the program reads bytes correctly but interprets them with the wrong layout assumption.
